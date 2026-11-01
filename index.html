@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salud Integral - Visor de Diagramas y Gestión Clínica</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #eaf1fa;
+    }
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .sidebar-gradient {
+      background: linear-gradient(180deg, #0a1f44 0%, #081735 100%);
+    }
+    .hero-banner-gradient {
+      background: linear-gradient(90deg, #ffffff 0%, #f4f8fe 50%, #e9f2ff 100%);
+    }
+    .tab-active {
+      background-color: #0284c7 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.39);
+    }
+    .module-card.active {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -3px rgba(2, 132, 199, 0.2);
+    }
+    .module-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .module-card:hover {
+      transform: translateY(-2px);
+    }
+    .pulse-ring {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .5; }
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-64 sidebar-gradient text-white flex flex-col justify-between p-4 shrink-0 shadow-2xl relative z-20">
+      <div class="space-y-6">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3 px-2 py-3 border-b border-blue-900/40">
+          <div class="w-11 h-11 rounded-2xl bg-blue-600/90 flex items-center justify-center shadow-lg shadow-blue-500/30 border border-blue-400/30">
+            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11h2l1-2 2 4 1-2h4" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-extrabold text-base tracking-tight leading-tight text-white">Salud Integral</h1>
+            <p class="text-[11px] font-medium text-blue-300">Gestión Clínica</p>
+          </div>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="space-y-1.5 text-xs font-semibold">
+          <a href="#" onclick="selectSidebar('inicio'); return false;" id="side-inicio" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-600/30 transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Inicio</span>
+          </a>
+          <a href="#" onclick="selectSidebar('diagramas'); return false;" id="side-diagramas" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
+            <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <span>Diagramas</span>
+          </a>
+          <a href="#" onclick="selectSidebar('reportes'); return false;" id="side-reportes" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Reportes</span>
+          </a>
+          <a href="#" onclick="selectSidebar('pacientes'); return false;" id="side-pacientes" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
+            <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <span>Pacientes</span>
+          </a>
+          <a href="#" onclick="selectSidebar('citas'); return false;" id="side-citas" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
+            <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>Citas</span>
+          </a>
+          <a href="#" onclick="selectSidebar('configuracion'); return false;" id="side-configuracion" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
+            <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Configuración</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Support Card & Bottom Graphic -->
+      <div class="space-y-4">
+        <div class="bg-blue-950/60 rounded-2xl p-3.5 border border-blue-800/40 text-center relative overflow-hidden">
+          <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center mx-auto mb-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <div class="font-bold text-xs text-white">¿Necesitas ayuda?</div>
+          <p class="text-[11px] text-blue-200 mt-0.5">Estamos para ti</p>
+          <button class="mt-2.5 w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
+            <span>Soporte</span>
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Pulse line footer graphic -->
+        <div class="opacity-30 pt-1">
+          <svg class="w-full h-7 text-blue-400" viewBox="0 0 200 40" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M0 20 L40 20 L48 20 L55 5 L65 35 L75 10 L82 25 L88 20 L200 20" />
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 p-5 md:p-7 space-y-4 overflow-y-auto max-w-[1600px]">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-transparent">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100/80 text-blue-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">Visor de Diagramas</h2>
+            <p class="text-xs text-slate-500 font-medium">Consultorio Médico "Salud Integral"</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Status Pill -->
+          <div class="px-3.5 py-1.5 bg-emerald-50 border border-emerald-200/80 rounded-full flex items-center gap-2 shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-ring"></span>
+            <span class="text-xs font-semibold text-emerald-700">Sistema Operativo</span>
+          </div>
+
+          <!-- User Profile Pill -->
+          <div class="flex items-center gap-2.5 pl-2 border-l border-slate-300">
+            <div class="w-8 h-8 rounded-full bg-blue-100 border border-blue-300 flex items-center justify-center text-blue-700 font-bold text-xs shadow-xs">
+              👨‍⚕️
+            </div>
+            <div class="text-xs font-bold text-slate-800 flex items-center gap-1 cursor-pointer">
+              <span>Administrador</span>
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- HERO BANNER -->
+      <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200/80 hero-banner-gradient flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+        
+        <!-- Left: Stethoscope illustration / medical tech -->
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 md:w-32 md:h-28 rounded-2xl bg-gradient-to-br from-slate-900 to-blue-900 p-2 flex items-center justify-center shadow-md relative overflow-hidden shrink-0">
+            <svg class="w-16 h-16 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <div class="absolute inset-0 bg-blue-500/10 backdrop-blur-xs"></div>
+          </div>
+
+          <div>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Salud Integral</h3>
+            <p class="text-sm font-medium text-blue-600 italic mt-0.5">Tecnología al servicio de tu salud</p>
+          </div>
+        </div>
+
+        <!-- Right: Heart and slogan -->
+        <div class="flex items-center gap-4 text-right pr-2">
+          <div>
+            <div class="font-handwriting text-blue-800 text-xl md:text-2xl leading-none">Cuidamos lo más importante...</div>
+            <div class="font-handwriting text-blue-600 text-2xl md:text-3xl font-bold leading-tight">tu salud</div>
+          </div>
+          <div class="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-200 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ARCHITECTURAL TABS ROW -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <button onclick="switchMainTab('despliegue')" id="tab-btn-despliegue" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 shadow-xs border border-slate-200 hover:border-blue-400 transition">
+          <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span>1. Diagramas de Despliegue</span>
+        </button>
+
+        <button onclick="switchMainTab('componentes')" id="tab-btn-componentes" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 shadow-xs border border-slate-200 hover:border-blue-400 transition">
+          <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+          <span>2. Diagramas de Componentes</span>
+        </button>
+
+        <button onclick="switchMainTab('paquetes')" id="tab-btn-paquetes" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 shadow-xs border border-slate-200 hover:border-blue-400 transition">
+          <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span>3. Diagrama de Paquetes</span>
+        </button>
+
+        <button onclick="switchMainTab('navegacion')" id="tab-btn-navegacion" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 shadow-xs border border-slate-200 hover:border-blue-400 transition">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>4. Mapa de Navegación</span>
+        </button>
+
+        <button onclick="switchMainTab('gui')" id="tab-btn-gui" class="tab-active px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          <span>5. Prototipos GUI Interactivos</span>
+        </button>
+      </div>
+
+      <!-- PROTOTIPOS MODULES SELECTOR CARD -->
+      <section id="module-selector-bar" class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-slate-200/80">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          
+          <!-- Instructions box -->
+          <div class="flex items-center gap-3 lg:max-w-xs pr-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-3 lg:pb-0">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-xs text-slate-900 leading-tight">Prototipos Interactivos de Interfaz Gráfica (GUI)</h4>
+              <p class="text-[11px] text-slate-500 mt-0.5 leading-tight">Selecciona un módulo para explorar su funcionamiento y ver el diseño de la interfaz.</p>
+            </div>
+          </div>
+
+          <!-- Modules horizontal carousel -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 flex-1">
+            
+            <!-- P01 Login -->
+            <div onclick="selectModule('p01')" id="mod-p01" class="module-card bg-sky-50/70 border border-sky-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                📅
+              </div>
+              <div class="font-bold text-xs text-slate-800">P01 Login</div>
+              <div class="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+            <!-- P02 Pacientes -->
+            <div onclick="selectModule('p02')" id="mod-p02" class="module-card bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                👥
+              </div>
+              <div class="font-bold text-xs text-slate-800">P02 Pacientes</div>
+              <div class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+            <!-- P04 Citas (30m) -->
+            <div onclick="selectModule('p04')" id="mod-p04" class="module-card bg-blue-600 text-white border-2 border-blue-400 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between shadow-md shadow-blue-500/20 active">
+              <div class="w-8 h-8 rounded-lg bg-white/20 text-white flex items-center justify-center text-sm mb-1">
+                🩺
+              </div>
+              <div class="font-bold text-xs text-white">P04 Citas<br><span class="text-[10px] opacity-90">(30m)</span></div>
+              <div class="w-5 h-5 rounded-full bg-white text-blue-700 flex items-center justify-center text-[10px] mt-1 font-bold shadow-xs">➔</div>
+            </div>
+
+            <!-- P06 Recepción -->
+            <div onclick="selectModule('p06')" id="mod-p06" class="module-card bg-purple-50/70 border border-purple-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                👩‍⚕️
+              </div>
+              <div class="font-bold text-xs text-slate-800">P06 Recepción</div>
+              <div class="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+            <!-- P08 Atención Médica -->
+            <div onclick="selectModule('p08')" id="mod-p08" class="module-card bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                ➕
+              </div>
+              <div class="font-bold text-xs text-slate-800">P08 Atención Médica</div>
+              <div class="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+            <!-- P09 Caja & Cobro -->
+            <div onclick="selectModule('p09')" id="mod-p09" class="module-card bg-teal-50/70 border border-teal-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-teal-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                📈
+              </div>
+              <div class="font-bold text-xs text-slate-800">P09 Caja & Cobro</div>
+              <div class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+            <!-- P10 Reportes -->
+            <div onclick="selectModule('p10')" id="mod-p10" class="module-card bg-indigo-50/70 border border-indigo-200/80 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center justify-between">
+              <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center text-sm shadow-xs mb-1">
+                📊
+              </div>
+              <div class="font-bold text-xs text-slate-800">P10 Reportes</div>
+              <div class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] mt-1 shadow-xs">➔</div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- DYNAMIC DISPLAY CONTAINER -->
+      <div id="main-content-display" class="space-y-4">
+        <!-- Injected via JavaScript (default P10 Reportes Gerenciales) -->
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // NAVIGATION LOGIC
+    function switchMainTab(tab) {
+      document.querySelectorAll('#tab-btn-despliegue, #tab-btn-componentes, #tab-btn-paquetes, #tab-btn-navegacion, #tab-btn-gui').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('bg-white', 'text-slate-700');
+      });
+
+      const activeBtn = document.getElementById('tab-btn-' + tab);
+      if(activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-700');
+        activeBtn.classList.add('tab-active');
+      }
+
+      const selectorBar = document.getElementById('module-selector-bar');
+
+      if (tab === 'gui') {
+        selectorBar.classList.remove('hidden');
+        selectModule('p10');
+      } else {
+        selectorBar.classList.add('hidden');
+        renderArchitectureTab(tab);
+      }
+    }
+
+    function selectSidebar(item) {
+      document.querySelectorAll('aside nav a').forEach(a => {
+        a.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+        a.classList.add('text-slate-300');
+      });
+      const target = document.getElementById('side-' + item);
+      if(target) {
+        target.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+        target.classList.remove('text-slate-300');
+      }
+
+      if (item === 'reportes') selectModule('p10');
+      else if (item === 'pacientes') selectModule('p02');
+      else if (item === 'citas') selectModule('p04');
+      else if (item === 'diagramas') switchMainTab('despliegue');
+      else switchMainTab('gui');
+    }
+
+    function selectModule(modKey) {
+      document.querySelectorAll('.module-card').forEach(c => {
+        c.classList.remove('active', 'border-2', 'border-blue-400', 'shadow-md');
+        if (c.id === 'mod-p04') {
+          c.classList.remove('bg-blue-600', 'text-white');
+          c.classList.add('bg-blue-50/70', 'text-slate-800');
+          c.querySelector('div.font-bold').classList.remove('text-white');
+          c.querySelector('div.font-bold').classList.add('text-slate-800');
+          const arrow = c.querySelector('div:last-child');
+          arrow.classList.remove('bg-white', 'text-blue-700');
+          arrow.classList.add('bg-blue-600', 'text-white');
+        }
+      });
+
+      const selected = document.getElementById('mod-' + modKey);
+      if (selected) {
+        selected.classList.add('active', 'border-2', 'border-blue-500', 'shadow-md');
+      }
+
+      renderScreen(modKey);
+    }
+
+    // ARCHITECTURE TAB RENDERER
+    function renderArchitectureTab(type) {
+      const container = document.getElementById('main-content-display');
+      if (type === 'despliegue') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-lg">Diagrama de Despliegue (UML 2.5.1 Deployment)</h3>
+                <p class="text-xs text-slate-500">Topología de hardware, terminales LAN, DMZ con TLS 1.3, VPC Nube y políticas de respaldo (RPO &le; 24h, RTO &le; 4h)</p>
+              </div>
+              <span class="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-lg">Cifrado AES-256 + TLS 1.3</span>
+            </div>
+
+            <div class="p-6 bg-slate-900 rounded-2xl text-white overflow-x-auto shadow-inner space-y-5">
+              <div class="min-w-[850px] space-y-4">
+                
+                <!-- LAN -->
+                <div class="border-2 border-blue-500/40 rounded-xl p-4 bg-slate-800/80">
+                  <div class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                    Red Local del Consultorio (LAN Segura - WPA3 / Ethernet)
+                  </div>
+                  <div class="grid grid-cols-4 gap-3">
+                    <div class="bg-slate-700/80 p-3 rounded-lg border border-slate-600 text-xs">
+                      <div class="text-blue-300 font-mono">&laquo;device&raquo;</div>
+                      <div class="font-bold text-sm">PC Recepción (x2)</div>
+                      <div class="text-[11px] text-slate-300 mt-1">&laquo;env&raquo; Navegador Web (SPA)</div>
+                    </div>
+                    <div class="bg-slate-700/80 p-3 rounded-lg border border-slate-600 text-xs">
+                      <div class="text-blue-300 font-mono">&laquo;device&raquo;</div>
+                      <div class="font-bold text-sm">PC Consultorio Médico (x4)</div>
+                      <div class="text-[11px] text-slate-300 mt-1">&laquo;env&raquo; Navegador Web (SPA)</div>
+                    </div>
+                    <div class="bg-slate-700/80 p-3 rounded-lg border border-slate-600 text-xs">
+                      <div class="text-blue-300 font-mono">&laquo;device&raquo;</div>
+                      <div class="font-bold text-sm">PC Administradora (x1)</div>
+                      <div class="text-[11px] text-slate-300 mt-1">&laquo;env&raquo; Navegador Web (SPA)</div>
+                    </div>
+                    <div class="bg-slate-700/80 p-3 rounded-lg border border-slate-600 text-xs">
+                      <div class="text-amber-300 font-mono">&laquo;device&raquo;</div>
+                      <div class="font-bold text-sm">Impresora Térmica Tickets</div>
+                      <div class="text-[11px] text-slate-300 mt-1">USB / Protocolo ESC/POS</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center font-mono text-xs text-emerald-400 bg-emerald-950/70 py-1.5 px-4 rounded-full border border-emerald-700 max-w-md mx-auto">
+                  &darr; Conexión Segura: HTTPS / TLS 1.3 (Puerto 443) &darr;
+                </div>
+
+                <!-- DMZ -->
+                <div class="border-2 border-emerald-500/40 rounded-xl p-4 bg-slate-800/80 flex justify-between items-center">
+                  <div>
+                    <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">&laquo;node&raquo; DMZ / Proxy Inverso &amp; WAF</div>
+                    <div class="font-bold text-sm text-white">NGINX 1.25 + Reglas OWASP Top 10</div>
+                    <div class="text-xs text-slate-300 mt-0.5">Terminación SSL/TLS, Rate Limiting contra ataques DoS y headers HSTS</div>
+                  </div>
+                  <span class="px-3 py-1 bg-emerald-900 text-emerald-200 text-xs font-mono rounded">Let's Encrypt Cert</span>
+                </div>
+
+                <div class="text-center font-mono text-xs text-indigo-400 bg-indigo-950/70 py-1 px-4 rounded-full border border-indigo-700 max-w-xs mx-auto">
+                  &darr; Red Privada / Puerto 8080 &darr;
+                </div>
+
+                <!-- VPC -->
+                <div class="border-2 border-indigo-500/40 rounded-xl p-4 bg-slate-800/80">
+                  <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">VPC Privada en la Nube (Sin acceso público directo)</div>
+                  <div class="grid grid-cols-3 gap-4 text-xs">
+                    <div class="bg-slate-700/90 p-3 rounded-lg border border-slate-600">
+                      <div class="text-indigo-300 font-mono">&laquo;node&raquo; Servidor de Aplicación</div>
+                      <div class="font-bold text-sm">salud-integral-api.jar</div>
+                      <div class="text-slate-300 mt-1 text-[11px]">Node.js LTS / OpenJDK 17. Lógica transaccional ACID, RBAC y Casos de Uso.</div>
+                    </div>
+                    <div class="bg-slate-700/90 p-3 rounded-lg border border-slate-600">
+                      <div class="text-cyan-300 font-mono">&laquo;database&raquo; DBMS PostgreSQL 16</div>
+                      <div class="font-bold text-sm">db_salud_integral</div>
+                      <div class="text-slate-300 mt-1 text-[11px]">Cifrado AES-256 en reposo. Transacciones SERIALIZABLE para agendamiento.</div>
+                    </div>
+                    <div class="bg-slate-700/90 p-3 rounded-lg border border-slate-600">
+                      <div class="text-purple-300 font-mono">&laquo;node&raquo; Agente Backup Diario</div>
+                      <div class="font-bold text-sm">Cloud Storage Glacier</div>
+                      <div class="text-slate-300 mt-1 text-[11px]">Copia cifrada diaria 01:00 AM (RPO &le; 24h, RTO &le; 4h comprobado).</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'componentes') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <h3 class="font-extrabold text-slate-900 text-lg">Diagrama de Componentes (UML 2.5.1 Component)</h3>
+            <p class="text-xs text-slate-500">Módulos funcionales desacoplados con interfaces provistas/requeridas y coordinación crítica transaccional.</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                <span class="font-mono text-blue-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Auth &amp; RBAC</div>
+                <p class="text-slate-600 mt-1">Valida credenciales, firma JWT con claims de rol y protege endpoints en backend.</p>
+              </div>
+              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <span class="font-mono text-emerald-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Patient Manager</div>
+                <p class="text-slate-600 mt-1">Garantiza documento único (RN01) y administración de expedientes.</p>
+              </div>
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                <span class="font-mono text-amber-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Scheduling Engine</div>
+                <p class="text-slate-600 mt-1">Control de slots de 30 min (RN02), bloqueo de cruces simultáneos y estados de cita.</p>
+              </div>
+              <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
+                <span class="font-mono text-cyan-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Clinical Attention</div>
+                <p class="text-slate-600 mt-1">Notas SOAP, borradores, inmutabilidad tras cierre (RN06) y adendas aclaratorias.</p>
+              </div>
+              <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl">
+                <span class="font-mono text-teal-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Billing &amp; Cash</div>
+                <p class="text-slate-600 mt-1">Generación atómica de cobro con tarifa fija (RN07) y comprobante no editable (RN08).</p>
+              </div>
+              <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
+                <span class="font-mono text-purple-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Reporting Service</div>
+                <p class="text-slate-600 mt-1">Agregación de estadísticas de citas por médico e ingresos por período (RF08).</p>
+              </div>
+              <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl">
+                <span class="font-mono text-rose-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Audit Logger</div>
+                <p class="text-slate-600 mt-1">Trazabilidad de operaciones críticas sin volcar notas clínicas confidenciales (RF09).</p>
+              </div>
+              <div class="p-3 bg-slate-100 border border-slate-300 rounded-xl">
+                <span class="font-mono text-slate-700 text-[10px]">&laquo;component&raquo;</span>
+                <div class="font-bold text-slate-900 text-sm">Persistence Manager</div>
+                <p class="text-slate-600 mt-1">Gestión de transacciones ACID aisladas sobre PostgreSQL DBMS.</p>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'paquetes') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <h3 class="font-extrabold text-slate-900 text-lg">Diagrama de Paquetes (UML 2.5.1 Clean Architecture)</h3>
+            <p class="text-xs text-slate-500">Organización en capas concéntricas sin dependencias circulares: Presentación &rarr; Aplicación &rarr; Dominio &larr; Infraestructura.</p>
+            <div class="grid grid-cols-4 gap-3 text-xs font-mono">
+              <div class="p-3 bg-amber-50 border border-amber-300 rounded-xl">
+                <div class="font-bold text-amber-900 font-sans text-sm mb-1">Capa Presentación</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>📁 controllers.auth</li>
+                  <li>📁 controllers.patients</li>
+                  <li>📁 controllers.schedule</li>
+                  <li>📁 controllers.clinical</li>
+                  <li>📁 middlewares.rbac</li>
+                </ul>
+              </div>
+              <div class="p-3 bg-blue-50 border border-blue-300 rounded-xl">
+                <div class="font-bold text-blue-900 font-sans text-sm mb-1">Capa Aplicación</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>📁 usecases.auth</li>
+                  <li>📁 usecases.patients</li>
+                  <li>📁 usecases.scheduling</li>
+                  <li>📁 usecases.clinical</li>
+                  <li>📁 ports.output</li>
+                </ul>
+              </div>
+              <div class="p-3 bg-emerald-50 border-2 border-emerald-400 rounded-xl">
+                <div class="font-bold text-emerald-900 font-sans text-sm mb-1">Capa Dominio (Core)</div>
+                <ul class="space-y-1 text-slate-700 font-semibold">
+                  <li>📁 domain.entities</li>
+                  <li>📁 ScheduleOverlapRule</li>
+                  <li>📁 ClinicalImmutability</li>
+                  <li>📁 SinglePaymentRule</li>
+                </ul>
+              </div>
+              <div class="p-3 bg-purple-50 border border-purple-300 rounded-xl">
+                <div class="font-bold text-purple-900 font-sans text-sm mb-1">Capa Infraestructura</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>📁 persistence.postgresql</li>
+                  <li>📁 security.argon2</li>
+                  <li>📁 security.jwt</li>
+                  <li>📁 logging.audit</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'navegacion') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <h3 class="font-extrabold text-slate-900 text-lg">Mapa de Navegación del Sistema (Site Map)</h3>
+            <p class="text-xs text-slate-500">Rutas autorizadas según el rol autenticado con bloqueo estricto (403 Forbidden).</p>
+            <div class="grid grid-cols-3 gap-4 text-xs">
+              <div class="p-4 bg-emerald-50/70 border border-emerald-300 rounded-xl space-y-2">
+                <div class="font-bold text-emerald-900 text-sm">ROL: RECEPCIÓN</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>• P02: Gestión de Pacientes</li>
+                  <li>• P04: Asignar Citas (Slots 30m)</li>
+                  <li>• P05: Reprogramar / Cancelar</li>
+                  <li>• P06: Recepción Diaria (Llegadas)</li>
+                  <li>• P09: Caja y Cobro</li>
+                </ul>
+                <div class="text-[11px] text-rose-700 bg-rose-100 p-2 rounded">Bloqueo: Sin acceso a notas clínicas.</div>
+              </div>
+              <div class="p-4 bg-cyan-50/70 border border-cyan-300 rounded-xl space-y-2">
+                <div class="font-bold text-cyan-900 text-sm">ROL: MÉDICO</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>• P07: Agenda Médica del Día</li>
+                  <li>• P07b: Historial Clínico Antecedentes</li>
+                  <li>• P08: Atención Médica (Borrador/Cierre)</li>
+                  <li>• P08b: Adendas Aclaratorias</li>
+                </ul>
+                <div class="text-[11px] text-amber-700 bg-amber-100 p-2 rounded">Bloqueo: Sin gestión de tarifas ni cobro en caja.</div>
+              </div>
+              <div class="p-4 bg-purple-50/70 border border-purple-300 rounded-xl space-y-2">
+                <div class="font-bold text-purple-900 text-sm">ROL: ADMINISTRADORA</div>
+                <ul class="space-y-1 text-slate-700">
+                  <li>• P03: Médicos, Disponibilidad y Tarifas</li>
+                  <li>• P10: Reportes Gerenciales y Estadísticas</li>
+                  <li>• P11: Usuarios, Roles y Activación</li>
+                  <li>• P11b: Bitácora de Auditoría</li>
+                </ul>
+                <div class="text-[11px] text-slate-700 bg-slate-200 p-2 rounded">Bloqueo: Sin acceso libre a historias clínicas.</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // SCREENS RENDERER FOR GUI MODULES
+    function renderScreen(screenKey) {
+      const container = document.getElementById('main-content-display');
+
+      if (screenKey === 'p10') {
+        container.innerHTML = `
+          <!-- HEADER TITLE BAR -->
+          <div class="bg-blue-900 text-white px-5 py-3 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
+            <div class="flex items-center gap-2.5 font-bold text-sm">
+              <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              <span>P10. Reportes Gerenciales y Estadísticas (CU10)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="alert('Exportando reporte consolidado a PDF...');" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+                <span>📄</span> Exportar PDF
+              </button>
+              <button onclick="alert('Descargando archivo CSV...');" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+                <span>📊</span> Exportar CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 STATS CARDS ROW -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Card 1: Citas Programadas -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="text-xs font-semibold text-slate-500">Citas Programadas</div>
+                <div class="text-2xl font-extrabold text-slate-900 tracking-tight">470</div>
+                <div class="text-[11px] font-medium text-slate-400">Este mes</div>
+              </div>
+              <div class="flex flex-col items-end gap-2">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base">
+                  📅
+                </div>
+                <!-- Sparkline -->
+                <svg class="w-12 h-5 text-blue-500" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M0 18 L15 12 L30 15 L50 4" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Card 2: Citas Atendidas -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="text-xs font-semibold text-slate-500">Citas Atendidas</div>
+                <div class="text-2xl font-extrabold text-slate-900 tracking-tight">445</div>
+                <div class="text-[11px] font-semibold text-emerald-600">94,7% de cumplimiento</div>
+              </div>
+              <div class="flex flex-col items-end gap-2">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-base">
+                  ✓
+                </div>
+                <!-- Sparkline -->
+                <svg class="w-12 h-5 text-emerald-500" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M0 16 L15 14 L30 8 L50 2" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Card 3: Pacientes Atendidos -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="text-xs font-semibold text-slate-500">Pacientes Atendidos</div>
+                <div class="text-2xl font-extrabold text-slate-900 tracking-tight">1.230</div>
+                <div class="text-[11px] font-medium text-slate-400">Este mes</div>
+              </div>
+              <div class="flex flex-col items-end gap-2">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-base">
+                  👥
+                </div>
+                <div class="text-purple-500 text-xs font-bold">📊</div>
+              </div>
+            </div>
+
+            <!-- Card 4: Citas Pendientes -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="text-xs font-semibold text-slate-500">Citas Pendientes</div>
+                <div class="text-2xl font-extrabold text-slate-900 tracking-tight">25</div>
+                <div class="text-[11px] font-medium text-slate-400">Por atender</div>
+              </div>
+              <div class="flex flex-col items-end gap-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-base">
+                  ⏱️
+                </div>
+                <div class="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">!</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CHARTS & DATA TABLE ROW -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- Left Chart: Citas por Médico (4 cols) -->
+            <div class="lg:col-span-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
+              <div class="flex items-center gap-2 font-bold text-xs text-slate-900">
+                <span class="text-blue-600">📈</span>
+                <span>Citas por Médico</span>
+              </div>
+              
+              <!-- Custom Visual Bar Chart -->
+              <div class="h-44 flex items-end justify-between gap-3 pt-6 px-2">
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span class="text-[11px] font-bold text-slate-700">120</span>
+                  <div class="w-full bg-blue-600 rounded-t-lg shadow-xs" style="height: 85%;"></div>
+                  <span class="text-[10px] text-slate-500 truncate w-full text-center">Dr. Silva</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span class="text-[11px] font-bold text-slate-700">110</span>
+                  <div class="w-full bg-emerald-500 rounded-t-lg shadow-xs" style="height: 75%;"></div>
+                  <span class="text-[10px] text-slate-500 truncate w-full text-center">Dra. Vera</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span class="text-[11px] font-bold text-slate-700">95</span>
+                  <div class="w-full bg-purple-500 rounded-t-lg shadow-xs" style="height: 60%;"></div>
+                  <span class="text-[10px] text-slate-500 truncate w-full text-center">Dr. Gómez</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <span class="text-[11px] font-bold text-slate-700">90</span>
+                  <div class="w-full bg-amber-500 rounded-t-lg shadow-xs" style="height: 55%;"></div>
+                  <span class="text-[10px] text-slate-500 truncate w-full text-center">Dra. Torres</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Chart: Estado de Citas (Donut Ring Chart) (3 cols) -->
+            <div class="lg:col-span-3 bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+              <div class="flex items-center gap-2 font-bold text-xs text-slate-900">
+                <span class="text-purple-600">⏱️</span>
+                <span>Estado de Citas</span>
+              </div>
+
+              <!-- SVG Donut Chart -->
+              <div class="relative w-36 h-36 mx-auto my-2 flex items-center justify-center">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#f1f5f9" stroke-width="4.5"></circle>
+                  <!-- 94.7% stroke (emerald) -->
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#10b981" stroke-width="4.5" stroke-dasharray="94.7, 5.3" stroke-linecap="round"></circle>
+                  <!-- 5.3% stroke (amber/orange) -->
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#f59e0b" stroke-width="4.5" stroke-dasharray="5.3, 94.7" stroke-dashoffset="-94.7" stroke-linecap="round"></circle>
+                </svg>
+                <div class="absolute text-center">
+                  <div class="text-sm font-extrabold text-slate-900 leading-none">94.7%</div>
+                  <div class="text-[10px] text-slate-500 font-medium">Atendidas</div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="flex justify-around text-[11px] text-slate-600 border-t pt-2">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Atendidas (94.7%)</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pendientes (5.3%)</span>
+              </div>
+            </div>
+
+            <!-- Right Table: Resumen Financiero y Atenciones (5 cols) -->
+            <div class="lg:col-span-5 bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-x-auto">
+              <div>
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-blue-900 text-white text-[11px]">
+                    <tr>
+                      <th class="p-2 rounded-l-lg">Médico</th>
+                      <th class="p-2">Especialidad</th>
+                      <th class="p-2 text-center">Citas Prog.</th>
+                      <th class="p-2 text-center">Atendidas</th>
+                      <th class="p-2 text-right rounded-r-lg">Ingresos</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr>
+                      <td class="p-2 font-semibold">Dr. Roberto Silva</td>
+                      <td class="p-2 text-slate-500">Medicina General</td>
+                      <td class="p-2 text-center font-medium">260</td>
+                      <td class="p-2 text-center font-bold text-emerald-600">245</td>
+                      <td class="p-2 text-right font-bold">$ 19.600.000</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2 font-semibold">Dra. Patricia Vera</td>
+                      <td class="p-2 text-slate-500">Pediatría</td>
+                      <td class="p-2 text-center font-medium">210</td>
+                      <td class="p-2 text-center font-bold text-emerald-600">200</td>
+                      <td class="p-2 text-right font-bold">$ 20.000.000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Totals row -->
+              <div class="bg-blue-50 border border-blue-200/80 rounded-xl p-3 flex justify-between items-center text-xs font-bold text-blue-900 mt-3">
+                <span>Totales del Mes:</span>
+                <div class="flex items-center gap-6">
+                  <span>Prog: <strong>470</strong></span>
+                  <span>Atendidas: <strong class="text-emerald-700">445</strong></span>
+                  <span class="text-sm font-extrabold text-blue-800">$ 39.600.000 COP</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      } else if (screenKey === 'p04') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">P04: Asignación y Programación de Citas Médicas (CU04)</h3>
+                <p class="text-xs text-slate-500">Paciente: Carlos Mendoza Pérez (CC 1020456789) • Medicina General</p>
+              </div>
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold">Duración Fija: 30 minutos (RN02)</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Médico y Especialidad:</label>
+                  <select class="w-full text-xs p-2.5 border rounded-xl bg-slate-50 font-medium">
+                    <option>Dr. Roberto Silva - Medicina General ($80.000)</option>
+                    <option>Dra. Patricia Vera - Pediatría ($100.000)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Consulta:</label>
+                  <input type="date" value="2026-11-05" class="w-full text-xs p-2.5 border rounded-xl bg-slate-50 font-medium">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Motivo de Consulta:</label>
+                  <textarea class="w-full text-xs p-2 border rounded-xl bg-slate-50" rows="3">Control de hipertensión arterial y molestia lumbar leve.</textarea>
+                </div>
+              </div>
+
+              <div class="md:col-span-2 space-y-3">
+                <label class="block text-xs font-semibold text-slate-700">Horarios Disponibles para el Médico (Slots de 30 min):</label>
+                <div class="grid grid-cols-4 gap-2.5 text-xs text-center">
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">08:00 AM</div>
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">08:30 AM</div>
+                  <div class="p-3 bg-slate-200 border border-slate-300 rounded-xl text-slate-500 line-through font-semibold">09:00 AM (Ocupado)</div>
+                  <div class="p-3 bg-blue-600 text-white rounded-xl font-extrabold shadow-md border-2 border-blue-400">09:30 AM (Elegido)</div>
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">10:00 AM</div>
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">10:30 AM</div>
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">11:00 AM</div>
+                  <div class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 font-bold cursor-pointer hover:bg-emerald-100">11:30 AM</div>
+                </div>
+
+                <div class="p-3.5 bg-blue-50 border border-blue-300 rounded-xl text-xs text-blue-900 flex justify-between items-center mt-3">
+                  <div>
+                    <strong>Control de Concurrencia (E01):</strong> La transacción se bloquea en la base de datos con nivel <code>SERIALIZABLE</code> para evitar reservas simultáneas.
+                  </div>
+                  <button onclick="alert('Cita agendada con éxito para el 05/Nov/2026 a las 09:30 AM. Pasando a Recepción...'); selectModule('p06');" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs whitespace-nowrap shadow-sm">
+                    CONFIRMAR CITA
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (screenKey === 'p01') {
+        container.innerHTML = `
+          <div class="max-w-md mx-auto bg-white p-7 rounded-2xl shadow-lg border border-slate-200 space-y-4">
+            <div class="text-center">
+              <div class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-xl mx-auto mb-2 shadow-sm">SI</div>
+              <h3 class="font-extrabold text-lg text-slate-900">Salud Integral - Acceso Seguro</h3>
+              <p class="text-xs text-slate-500">Autenticación basada en Roles (RBAC)</p>
+            </div>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Usuario / Correo Electrónico</label>
+                <input type="text" value="recepcion@saludintegral.com" class="w-full p-2.5 border rounded-xl bg-slate-50 font-medium" readonly>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Contraseña</label>
+                <input type="password" value="••••••••••••" class="w-full p-2.5 border rounded-xl bg-slate-50 font-medium" readonly>
+              </div>
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-[11px]">
+                <strong>Seguridad RNF01:</strong> Contraseña cifrada con Argon2id. El menú se adapta al perfil autenticado.
+              </div>
+              <button onclick="alert('Inicio de sesión exitoso como Recepción.'); selectModule('p04');" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition">
+                INGRESAR AL SISTEMA
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (screenKey === 'p02') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <h3 class="font-bold text-slate-900 text-base">P02: Gestión y Registro de Pacientes (CU02)</h3>
+              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-semibold">Regla RN01: Documento Único</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <h4 class="font-bold text-xs text-slate-700 uppercase">Búsqueda de Paciente</h4>
+                <div class="flex gap-2 text-xs">
+                  <select class="border p-2 rounded-lg bg-white font-medium"><option>CC</option><option>TI</option></select>
+                  <input type="text" value="1020456789" class="w-full border p-2 rounded-lg bg-white font-medium">
+                  <button class="bg-blue-600 text-white px-3 rounded-lg font-bold">Buscar</button>
+                </div>
+                <div class="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 space-y-1">
+                  <strong>Alerta de Duplicidad (E02):</strong> El paciente con CC 1020456789 ya existe en el sistema: <em>Carlos Mendoza Pérez</em>.
+                  <div class="pt-1">
+                    <button onclick="selectModule('p04')" class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg">Agendar Cita Directa</button>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
+                <h4 class="font-bold text-xs text-slate-700 uppercase">Registrar Nuevo Paciente</h4>
+                <div class="grid grid-cols-2 gap-2">
+                  <div><label class="text-slate-500">Nombres (*)</label><input class="w-full p-1.5 border rounded bg-white" placeholder="Carlos"></div>
+                  <div><label class="text-slate-500">Apellidos (*)</label><input class="w-full p-1.5 border rounded bg-white" placeholder="Mendoza"></div>
+                  <div><label class="text-slate-500">Teléfono (*)</label><input class="w-full p-1.5 border rounded bg-white" placeholder="3105559876"></div>
+                  <div><label class="text-slate-500">Correo</label><input class="w-full p-1.5 border rounded bg-white" placeholder="cmendoza@email.com"></div>
+                </div>
+                <button class="mt-2 w-full py-2 bg-emerald-600 text-white rounded-lg font-bold">Guardar Paciente</button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (screenKey === 'p06') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">P06: Recepción Diaria - Sala de Espera (CU06)</h3>
+                <p class="text-xs text-slate-500">Fecha: 05 de Noviembre de 2026</p>
+              </div>
+              <span class="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-lg text-xs font-semibold">Estados de Cita (RN04)</span>
+            </div>
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700">
+                <tr><th class="p-2">Hora</th><th class="p-2">Paciente</th><th class="p-2">Médico</th><th class="p-2">Estado</th><th class="p-2 text-right">Acción</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-2 font-bold">08:30 AM</td><td class="p-2">Jorge Restrepo</td><td class="p-2">Dr. Roberto Silva</td>
+                  <td><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-bold">EN ESPERA</span></td>
+                  <td class="p-2 text-right text-slate-400">En Sala</td>
+                </tr>
+                <tr class="bg-blue-50/50">
+                  <td class="p-2 font-bold">09:30 AM</td><td class="p-2 font-semibold">Carlos Mendoza Pérez</td><td class="p-2">Dr. Roberto Silva</td>
+                  <td><span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-bold">PROGRAMADA</span></td>
+                  <td class="p-2 text-right">
+                    <button onclick="alert('Llegada confirmada. El estado cambia a EN ESPERA y se notifica al Dr. Silva.'); selectModule('p08');" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg">MARCAR LLEGADA</button>
+                    <button class="px-2 py-1 bg-slate-200 text-slate-700 rounded-lg ml-1 font-medium">No Asistió</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (screenKey === 'p08') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">P08: Registro de Atención Clínica (CU08)</h3>
+                <p class="text-xs text-slate-500">Dr. Roberto Silva • Paciente: Carlos Mendoza Pérez • Cita: 09:30 AM</p>
+              </div>
+              <span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded-lg text-xs font-bold">Inmutabilidad Post-Cierre (RN06)</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div><label class="font-bold text-slate-700">Motivo de Consulta (*)</label><textarea class="w-full p-2 border rounded-xl bg-slate-50" rows="2">Control rutinario de hipertensión arterial.</textarea></div>
+              <div><label class="font-bold text-slate-700">Examen Físico (*)</label><textarea class="w-full p-2 border rounded-xl bg-slate-50" rows="2">TA: 130/85 mmHg. FC: 72 lpm. Afebril.</textarea></div>
+              <div class="col-span-2"><label class="font-bold text-slate-700">Diagnóstico e Indicaciones (*)</label><textarea class="w-full p-2 border rounded-xl bg-slate-50" rows="2">Hipertensión esencial controlada. Continuar Losartán 50mg/día.</textarea></div>
+            </div>
+            <div class="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex justify-between items-center">
+              <span><strong>Atomicidad (CU08):</strong> Al cerrar, la consulta se vuelve inmutable y se genera simultáneamente el cobro en caja por $80.000 COP.</span>
+              <div class="flex gap-2">
+                <button class="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg font-bold">Guardar Borrador</button>
+                <button onclick="alert('Atención Cerrada con éxito. Cobro CB-00452 generado en Caja.'); selectModule('p09');" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold shadow-sm">CERRAR ATENCIÓN DEFINITIVA</button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (screenKey === 'p09') {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">P09: Caja y Cobro Automático (CU09)</h3>
+                <p class="text-xs text-slate-500">Cobro Generado por Atención: AT-450 (Dr. Roberto Silva)</p>
+              </div>
+              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Pago Completo Único (RN07, RN08)</span>
+            </div>
+            <div class="grid grid-cols-2 gap-5 text-xs">
+              <div class="p-4 bg-slate-50 rounded-xl border space-y-2">
+                <div class="flex justify-between"><span>Folio Cobro:</span> <strong class="font-mono">CB-2026-00452</strong></div>
+                <div class="flex justify-between"><span>Paciente:</span> <strong>Carlos Mendoza Pérez</strong></div>
+                <div class="flex justify-between"><span>Concepto:</span> <span>Consulta Medicina General</span></div>
+                <div class="flex justify-between text-sm font-bold border-t pt-2"><span>Total a Liquidar:</span> <span class="text-blue-700">$ 80.000 COP</span></div>
+                <div class="pt-2"><label class="text-slate-600">Medio de Pago:</label><select class="w-full p-2 border rounded-lg bg-white mt-1"><option>Efectivo</option><option>Tarjeta</option></select></div>
+                <button onclick="alert('Pago registrado correctamente. Comprobante REC-8891 emitido.');" class="w-full mt-3 py-2 bg-emerald-600 text-white rounded-lg font-bold">REGISTRAR PAGO COMPLETO</button>
+              </div>
+              <div class="p-4 bg-white rounded-xl border-2 border-dashed space-y-2 font-mono text-[11px] text-slate-700">
+                <div class="text-center font-bold pb-1 border-b">CLÍNICA SALUD INTEGRAL<br>COMPROBANTE INTERNO #REC-8891</div>
+                <div class="flex justify-between"><span>Fecha:</span> <span>05/Nov/2026 09:55 AM</span></div>
+                <div class="flex justify-between"><span>Atención:</span> <span>AT-450 (Dr. Silva)</span></div>
+                <div class="flex justify-between font-bold text-xs pt-1 border-t"><span>TOTAL PAGADO:</span> <span>$ 80.000 COP</span></div>
+                <div class="text-center text-[10px] text-slate-400 pt-2">[ COMPROBANTE EMITIDO - NO EDITABLE ]</div>
+                <button class="w-full py-1 bg-slate-800 text-white rounded font-sans text-xs mt-2">Imprimir Ticket Térmico</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Default initialization
+    renderScreen('p10');
+  </script>
+</body>
+</html>
